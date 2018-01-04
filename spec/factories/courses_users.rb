@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 # == Schema Information
 #
 # Table name: courses_users
@@ -17,9 +16,10 @@
 #  recent_revisions       :integer          default(0)
 #  character_sum_draft    :integer          default(0)
 #  real_name              :string(255)
+#  role_description       :string(255)
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :courses_user, class: 'CoursesUsers' do
     nil
   end

@@ -6,13 +6,16 @@ import UIActions from '../../actions/ui_actions.js';
 import AssignmentList from '../assignments/assignment_list.jsx';
 import ServerActions from '../../actions/server_actions.js';
 import AvailableArticles from '../articles/available_articles.jsx';
+import CourseOresPlot from './course_ores_plot.jsx';
+import CategoryHandler from '../categories/category_handler.jsx';
 
 const ArticlesHandler = createReactClass({
   displayName: 'ArticlesHandler',
 
   propTypes: {
     course_id: PropTypes.string,
-    current_user: PropTypes.object
+    current_user: PropTypes.object,
+    course: PropTypes.object
   },
 
   componentWillMount() {
@@ -25,6 +28,10 @@ const ArticlesHandler = createReactClass({
   },
 
   render() {
+    // FIXME: These props should be required, and this component should not be
+    // mounted in the first place if they are not available.
+    if (!this.props.course || !this.props.course.home_wiki) { return <div />; }
+
     let header;
     if (Features.wikiEd) {
       header = <h3 className="tooltip-trigger">{I18n.t('metrics.articles_edited')}</h3>;
@@ -39,11 +46,17 @@ const ArticlesHandler = createReactClass({
       );
     }
 
+   let categories;
+   if (this.props.course.type === 'ArticleScopedProgram') {
+     categories = <CategoryHandler course={this.props.course} current_user={this.props.current_user} />;
+   }
+
     return (
       <div>
         <div id="articles">
           <div className="section-header">
             {header}
+            <CourseOresPlot course={this.props.course} />
             <div className="sort-select">
               <select className="sorts" name="sorts" onChange={this.sortSelect}>
                 <option value="rating_num">{I18n.t('articles.rating')}</option>
@@ -62,6 +75,7 @@ const ArticlesHandler = createReactClass({
           <AssignmentList {...this.props} />
         </div>
         <AvailableArticles {...this.props} />
+        {categories}
       </div>
     );
   }

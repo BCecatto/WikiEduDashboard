@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 # == Schema Information
 #
 # Table name: courses_users
@@ -17,6 +16,7 @@
 #  recent_revisions       :integer          default(0)
 #  character_sum_draft    :integer          default(0)
 #  real_name              :string(255)
+#  role_description       :string(255)
 #
 
 require "#{Rails.root}/lib/utils"
@@ -81,8 +81,12 @@ class CoursesUsers < ActiveRecord::Base
     role.positive? && user.permissions == 1 && user.greeter == false
   end
 
+  def live_revisions
+    course.revisions.joins(:article).where(user_id: user.id).live
+  end
+
   def update_cache
-    revisions = course.revisions.joins(:article).where(user_id: user.id)
+    revisions = live_revisions
     self.character_sum_ms = character_sum(revisions, Article::Namespaces::MAINSPACE)
     self.character_sum_us = character_sum(revisions, Article::Namespaces::USER)
     self.character_sum_draft = character_sum(revisions, Article::Namespaces::DRAFT)

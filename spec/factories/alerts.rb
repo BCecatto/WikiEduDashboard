@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 # == Schema Information
 #
 # Table name: alerts
@@ -17,9 +16,10 @@
 #  target_user_id :integer
 #  subject_id     :integer
 #  resolved       :boolean          default(FALSE)
+#  details        :text(65535)
 #
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :alert, class: 'ArticlesForDeletionAlert'
 
   factory :active_course_alert, class: 'ActiveCourseAlert'
